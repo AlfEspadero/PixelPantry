@@ -53,6 +53,34 @@ Or run without DevTools:
 npm start
 ```
 
+## Building Releases
+
+Build installers for all platforms:
+```bash
+npm run build
+```
+
+Build for specific platforms:
+```bash
+npm run build:win      # Windows (NSIS installer + Portable)
+npm run build:mac      # macOS (DMG + ZIP for Intel and Apple Silicon)
+npm run build:linux    # Linux (AppImage, deb, rpm)
+```
+
+Built installers will be in the `dist/` directory.
+
+### Automated Releases
+
+When you push a git tag starting with `v` (e.g., `v1.0.0`), GitHub Actions will automatically:
+- Build installers for Windows, macOS, and Linux
+- Create a GitHub release with all installers attached
+
+To create a release:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
 ## How to Use
 
 1. **Add Items**: Click the "+ Add Item" button to add new pantry items

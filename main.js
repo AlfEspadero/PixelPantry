@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const PantryDatabase = require('./database');
 const CloudSync = require('./cloudSync');
+require('dotenv').config();
 
 let mainWindow;
 let db;
@@ -190,7 +191,16 @@ ipcMain.handle('pull-from-cloud', async () => {
 
 app.whenReady().then(() => {
   db = new PantryDatabase();
-  cloudSync = new CloudSync();
+  // Get API key from environment variable
+  const apiKey = process.env.PIXELPANTRY_API_KEY;
+  const apiUrl = process.env.PIXELPANTRY_API_URL || 'https://pixelpantry.alfelfriki.tech';
+  
+  if (!apiKey) {
+    console.warn('WARNING: PIXELPANTRY_API_KEY not set. Cloud sync will not work.');
+    console.warn('Please create a .env file with your API key. See .env.example for template.');
+  }
+  
+  cloudSync = new CloudSync(apiUrl, apiKey);
   createWindow();
 
   app.on('activate', () => {

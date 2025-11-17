@@ -1,8 +1,9 @@
 const https = require('https');
 
 class CloudSync {
-  constructor(apiUrl = 'https://pixelpantry.alfelfriki.tech') {
+  constructor(apiUrl = 'https://pixelpantry.alfelfriki.tech', apiKey = null) {
     this.apiUrl = apiUrl;
+    this.apiKey = apiKey;
     this.syncInProgress = false;
   }
 
@@ -19,6 +20,11 @@ class CloudSync {
           'Content-Type': 'application/json',
         }
       };
+
+      // Add API key if provided
+      if (this.apiKey) {
+        options.headers['X-API-Key'] = this.apiKey;
+      }
 
       if (data) {
         const body = JSON.stringify(data);

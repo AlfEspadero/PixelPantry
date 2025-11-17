@@ -35,6 +35,12 @@ A gamified pixel-art pantry inventory tracker built with Electron.
 npm install
 ```
 
+2. Set up your API key for cloud sync:
+```bash
+cp .env.example .env
+# Edit .env and add your Cloudflare API key
+```
+
 ## Usage
 
 Run the application in development mode:
@@ -101,9 +107,28 @@ The database includes three main tables:
 PixelPantry can sync with a Cloudflare D1 database via REST API:
 
 - **Endpoint**: `https://pixelpantry.alfelfriki.tech`
+- **Authentication**: API key required (set in `.env` file)
 - **Push**: Uploads local data to cloud (overwrites cloud data)
 - **Pull**: Downloads cloud data to local (overwrites local data)
 - **Connection Test**: Verifies cloud API is accessible
+
+### Setting up Cloud Sync
+
+1. Get your API key from the Cloudflare worker deployment
+2. Create a `.env` file in the app directory:
+   ```env
+   PIXELPANTRY_API_KEY=your-api-key-here
+   PIXELPANTRY_API_URL=https://pixelpantry.alfelfriki.tech
+   ```
+3. Restart the app to load the API key
+4. Click ☁ Sync to test connection and sync data
+
+### Security
+
+- All sync operations require API key authentication
+- API key stored locally in `.env` (not committed to git)
+- HTTPS encryption for all data transfers
+- Only you can access your data with your unique API key
 
 Your cloud endpoint should implement these REST endpoints:
 - `GET /api/health` - Health check

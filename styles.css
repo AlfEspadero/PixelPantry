@@ -484,3 +484,79 @@ header {
 .item-edit-btn:hover {
   background: #1976D2;
 }
+
+/* Cloud Sync Styles */
+.sync-status {
+  font-size: 20px;
+  padding: 8px;
+  background: #3a3a3a;
+  border: 3px solid #4a4a4a;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.sync-status.synced {
+  border-color: #4CAF50;
+  animation: pulse-green 2s infinite;
+}
+
+.sync-status.error {
+  border-color: #F44336;
+}
+
+.sync-status.syncing {
+  border-color: #FFD700;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { border-color: #4CAF50; }
+  50% { border-color: #2E7D32; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sync-message {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 3px solid #4a4a4a;
+  background: #2a2a2a;
+  font-size: 9px;
+  text-align: center;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sync-message.success {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.sync-message.error {
+  border-color: #F44336;
+  color: #F44336;
+}
+
+.sync-message.info {
+  border-color: #2196F3;
+  color: #2196F3;
+}
+
+.sync-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.sync-info {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -21,6 +21,10 @@ A gamified pixel-art pantry inventory tracker built with Electron.
   - Pulsing animation for low stock alerts
 - **Search & Filter**: Quickly find items by name or category
 - **SQLite Database**: Persistent local storage with proper relational data
+- **Cloud Sync**: Sync your data with Cloudflare D1 database
+  - Push local data to cloud
+  - Pull cloud data to local
+  - Test connection to cloud
 - **Item Editing**: Modify item details, categories, subcategories, and thresholds
 - **Real-time Stats**: Track total items, categories, and low stock alerts
 
@@ -59,6 +63,10 @@ npm start
 6. **Filter by Category**: Click categories in the sidebar or use the dropdown
 7. **Search**: Type in the search box to find specific items
 8. **Monitor Stock**: Check the stats bar for low stock alerts
+9. **Cloud Sync**: Click the ☁ Sync button to:
+   - Test connection to your Cloudflare D1 database
+   - Push local data to the cloud (overwrites cloud)
+   - Pull cloud data to local (overwrites local)
 
 ## Project Structure
 
@@ -67,6 +75,7 @@ PixelPantry/
 ├── main.js           # Electron main process
 ├── preload.js        # Preload script for IPC
 ├── database.js       # SQLite database layer
+├── cloudSync.js      # Cloud sync with Cloudflare D1
 ├── index.html        # Application UI
 ├── styles.css        # Pixel-art styling
 ├── renderer.js       # Frontend logic
@@ -86,6 +95,25 @@ The database includes three main tables:
 - **categories**: Main category definitions
 - **subcategories**: User-created subcategories
 - **items**: Inventory items with relationships
+
+## Cloud Sync
+
+PixelPantry can sync with a Cloudflare D1 database via REST API:
+
+- **Endpoint**: `https://pixelpantry.alfelfriki.tech`
+- **Push**: Uploads local data to cloud (overwrites cloud data)
+- **Pull**: Downloads cloud data to local (overwrites local data)
+- **Connection Test**: Verifies cloud API is accessible
+
+Your cloud endpoint should implement these REST endpoints:
+- `GET /api/health` - Health check
+- `GET /api/categories` - Get all categories
+- `GET /api/subcategories` - Get all subcategories
+- `GET /api/items` - Get all items
+- `POST /api/categories` - Create/update category
+- `POST /api/subcategories` - Create/update subcategory
+- `POST /api/items` - Create/update item
+- `POST /api/clear` - Clear all data
 
 ## Default Categories
 

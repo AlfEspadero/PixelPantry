@@ -30,6 +30,16 @@ const editItemForm = document.getElementById('edit-item-form');
 const closeEdit = document.querySelector('.close-edit');
 const cancelEditBtn = document.getElementById('cancel-edit-btn');
 
+// Cloud Sync Elements
+const cloudSyncBtn = document.getElementById('cloud-sync-btn');
+const cloudSyncModal = document.getElementById('cloud-sync-modal');
+const closeSync = document.querySelector('.close-sync');
+const syncStatus = document.getElementById('sync-status');
+const syncStatusMessage = document.getElementById('sync-status-message');
+const pushToCloudBtn = document.getElementById('push-to-cloud-btn');
+const pullFromCloudBtn = document.getElementById('pull-from-cloud-btn');
+const testConnectionBtn = document.getElementById('test-connection-btn');
+
 // Initialize App
 async function init() {
   await loadCategories();
@@ -399,6 +409,9 @@ window.onclick = (event) => {
   if (event.target === editItemModal) {
     editItemModal.style.display = 'none';
   }
+  if (event.target === cloudSyncModal) {
+    cloudSyncModal.style.display = 'none';
+  }
 };
 
 searchInput.oninput = (e) => {
@@ -425,6 +438,102 @@ document.getElementById('edit-item-category').onchange = () => {
 // Update subcategories list when category changes in subcategories modal
 subcategoryCategory.onchange = () => {
   renderSubcategoriesList();
+};
+
+// Cloud Sync Functions
+function showSyncMessage(message, type = 'info') {
+  syncStatusMessage.textContent = message;
+  syncStatusMessage.className = `sync-message ${type}`;
+}
+
+function setSyncStatus(status) {
+  syncStatus.className = 'sync-status';
+  if (status === 'syncing') {
+    syncStatus.classList.add('syncing');
+  } else if (status === 'synced') {
+    syncStatus.classList.add('synced');
+  } else if (status === 'error') {
+    syncStatus.classList.add('error');
+  }
+}
+
+async function testConnection() {
+  showSyncMessage('Testing connection...', 'info');
+  setSyncStatus('syncing');
+  
+  const result = await window.electronAPI.testCloudConnection();
+  
+  if (result.success) {
+    showSyncMessage('✓ Connected to cloud successfully!', 'success');
+    setSyncStatus('synced');
+  } else {
+    showSyncMessage(`✗ Connection failed: ${result.error}`, 'error');
+    setSyncStatus('error');
+  }
+}
+
+async function pushToCloud() {
+  if (!confirm('This will overwrite all cloud data with your local data. Continue?')) {
+    return;
+  }
+  
+  showSyncMessage('Pushing data to cloud...', 'info');
+  setSyncStatus('syncing');
+  
+  const result = await window.electronAPI.pushToCloud();
+  
+  if (result.success) {
+    showSyncMessage('✓ Data pushed to cloud successfully!', 'success');
+    setSyncStatus('synced');
+  } else {
+    showSyncMessage(`✗ Push failed: ${result.error}`, 'error');
+    setSyncStatus('error');
+  }
+}
+
+async function pullFromCloud() {
+  if (!confirm('This will overwrite all local data with cloud data. Continue?')) {
+    return;
+  }
+  
+  showSyncMessage('Pulling data from cloud...', 'info');
+  setSyncStatus('syncing');
+  
+  const result = await window.electronAPI.pullFromCloud();
+  
+  if (result.success) {
+    showSyncMessage('✓ Data pulled from cloud successfully!', 'success');
+    setSyncStatus('synced');
+    
+    // Reload all data
+    await loadCategories();
+    await loadSubcategories();
+    await loadItems();
+    renderCategories();
+    renderInventory();
+    updateStats();
+  } else {
+    showSyncMessage(`✗ Pull failed: ${result.error}`, 'error');
+    setSyncStatus('error');
+  }
+}
+
+// Cloud Sync Event Listeners
+cloudSyncBtn.onclick = () => {
+  cloudSyncModal.style.display = 'block';
+  showSyncMessage('Ready to sync with cloud', 'info');
+};
+
+closeSync.onclick = () => {
+  cloudSyncModal.style.display = 'none';
+};
+
+testConnectionBtn.onclick = testConnection;
+pushToCloudBtn.onclick = pushToCloud;
+pullFromCloudBtn.onclick = pullFromCloud;
+
+syncStatus.onclick = () => {
+  cloudSyncModal.style.display = 'block';
 };
 
 // Initialize on load

@@ -17,5 +17,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteItem: (id) => ipcRenderer.invoke('delete-item', id),
   
   // Stats
-  getStats: () => ipcRenderer.invoke('get-stats')
+  getStats: () => ipcRenderer.invoke('get-stats'),
+  
+  // Cloud Sync
+  testCloudConnection: () => ipcRenderer.invoke('test-cloud-connection'),
+  pushToCloud: () => ipcRenderer.invoke('push-to-cloud'),
+  pullFromCloud: () => ipcRenderer.invoke('pull-from-cloud')
 });

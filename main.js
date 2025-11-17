@@ -1,9 +1,11 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const PantryDatabase = require('./database');
+const CloudSync = require('./cloudSync');
 
 let mainWindow;
 let db;
+let cloudSync;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -130,8 +132,65 @@ ipcMain.handle('get-stats', async () => {
   }
 });
 
+// Cloud Sync Handlers
+ipcMain.handle('test-cloud-connection', async () => {
+  try {
+    return await cloudSync.testConnection();
+  } catch (error) {
+    console.error('Error testing connection:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('push-to-cloud', async () => {
+  try {
+    const categories = db.getAllCategories();
+    const subcategories = db.getAllSubcategories();
+    const items = db.getAllItems();
+
+    return await cloudSync.pushToCloud({
+      categories,
+      subcategories,
+      items
+    });
+  } catch (error) {
+    console.error('Error pushing to cloud:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('pull-from-cloud', async () => {
+  try {
+    const result = await cloudSync.pullFromCloud();
+    
+    if (result.success && result.data) {
+      // Clear local database
+      db.db.exec('DELETE FROM items');
+      db.db.exec('DELETE FROM subcategories');
+      
+      // Import subcategories
+      for (const subcategory of result.data.subcategories) {
+        db.addSubcategory(subcategory.id, subcategory.name, subcategory.category_id);
+      }
+      
+      // Import items
+      for (const item of result.data.items) {
+        db.addItem(item);
+      }
+      
+      return { success: true, message: 'Data pulled and imported successfully' };
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error pulling from cloud:', error);
+    return { success: false, error: error.message };
+  }
+});
+
 app.whenReady().then(() => {
   db = new PantryDatabase();
+  cloudSync = new CloudSync();
   createWindow();
 
   app.on('activate', () => {

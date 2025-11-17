@@ -19,7 +19,8 @@
     "inventory",
     "pixel-art"
   ],
-  "author": "",
+  "author": "Alfonso Espadero Jr",
+  "email": "",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
@@ -51,7 +52,7 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": ["x64"]
         },
         {
           "target": "portable",
@@ -85,12 +86,13 @@
           "arch": ["x64"]
         },
         {
-          "target": "rpm",
+          "target": "zip",
           "arch": ["x64"]
         }
       ],
       "category": "Utility",
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "maintainer": "Alfonso Espadero Jr <>"
     },
     "nsis": {
       "oneClick": false,

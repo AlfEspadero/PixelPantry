@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PixelPantry - Inventory Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="pixel-title">🎮 PixelPantry</h1>
+      <p class="subtitle">Your Gamified Pantry Inventory</p>
+    </header>
+
+    <div class="main-content">
+      <!-- Categories Sidebar -->
+      <aside class="categories-panel">
+        <h2>Categories</h2>
+        <div id="categories-list" class="categories-list"></div>
+        <button id="manage-subcategories-btn" class="pixel-btn secondary" style="width: 100%; margin-top: 15px; font-size: 8px;">
+          Manage Subcategories
+        </button>
+      </aside>
+
+      <!-- Inventory Grid -->
+      <main class="inventory-area">
+        <div class="controls">
+          <button id="add-item-btn" class="pixel-btn primary">+ Add Item</button>
+          <input type="text" id="search-input" placeholder="Search items..." class="pixel-input">
+          <select id="filter-category" class="pixel-select">
+            <option value="all">All Categories</option>
+          </select>
+        </div>
+
+        <div id="inventory-grid" class="inventory-grid"></div>
+      </main>
+    </div>
+
+    <!-- Stats Footer -->
+    <footer class="stats-bar">
+      <div class="stat">
+        <span class="stat-label">Total Items:</span>
+        <span id="total-items" class="stat-value">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Categories:</span>
+        <span id="total-categories" class="stat-value">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Low Stock:</span>
+        <span id="low-stock" class="stat-value warning">0</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Add Item Modal -->
+  <div id="add-item-modal" class="modal">
+    <div class="modal-content pixel-box">
+      <span class="close">&times;</span>
+      <h2>Add New Item</h2>
+      <form id="add-item-form">
+        <div class="form-group">
+          <label for="item-name">Item Name:</label>
+          <input type="text" id="item-name" required class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="item-category">Category:</label>
+          <select id="item-category" required class="pixel-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="item-subcategory">Subcategory (Optional):</label>
+          <select id="item-subcategory" class="pixel-select">
+            <option value="">None</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="item-quantity">Quantity:</label>
+          <input type="number" id="item-quantity" min="0" value="1" required class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="item-unit">Unit:</label>
+          <input type="text" id="item-unit" placeholder="e.g., cans, boxes, kg" class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="item-low-stock">Low Stock Alert At:</label>
+          <input type="number" id="item-low-stock" min="0" value="3" required class="pixel-input">
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="pixel-btn primary">Add Item</button>
+          <button type="button" class="pixel-btn secondary" id="cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manage Subcategories Modal -->
+  <div id="subcategories-modal" class="modal">
+    <div class="modal-content pixel-box">
+      <span class="close-subcategories">&times;</span>
+      <h2>Manage Subcategories</h2>
+      
+      <div class="form-group">
+        <label for="subcategory-category">Category:</label>
+        <select id="subcategory-category" class="pixel-select"></select>
+      </div>
+
+      <div id="subcategories-list" class="subcategories-list"></div>
+
+      <form id="add-subcategory-form" style="margin-top: 20px;">
+        <div class="form-group">
+          <label for="new-subcategory-name">New Subcategory Name:</label>
+          <input type="text" id="new-subcategory-name" required class="pixel-input">
+        </div>
+        <button type="submit" class="pixel-btn primary">Add Subcategory</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Item Modal -->
+  <div id="edit-item-modal" class="modal">
+    <div class="modal-content pixel-box">
+      <span class="close-edit">&times;</span>
+      <h2>Edit Item</h2>
+      <form id="edit-item-form">
+        <input type="hidden" id="edit-item-id">
+        <div class="form-group">
+          <label for="edit-item-name">Item Name:</label>
+          <input type="text" id="edit-item-name" required class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="edit-item-category">Category:</label>
+          <select id="edit-item-category" required class="pixel-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="edit-item-subcategory">Subcategory:</label>
+          <select id="edit-item-subcategory" class="pixel-select">
+            <option value="">None</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-item-quantity">Quantity:</label>
+          <input type="number" id="edit-item-quantity" min="0" required class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="edit-item-unit">Unit:</label>
+          <input type="text" id="edit-item-unit" class="pixel-input">
+        </div>
+        <div class="form-group">
+          <label for="edit-item-low-stock">Low Stock Alert At:</label>
+          <input type="number" id="edit-item-low-stock" min="0" required class="pixel-input">
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="pixel-btn primary">Save Changes</button>
+          <button type="button" class="pixel-btn secondary" id="cancel-edit-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

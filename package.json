@@ -1,0 +1,26 @@
+{
+  "name": "pixelpantry",
+  "version": "1.0.0",
+  "description": "A gamified pixel-art pantry inventory tracker",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --enable-logging",
+    "rebuild": "electron-rebuild"
+  },
+  "keywords": [
+    "electron",
+    "pantry",
+    "inventory",
+    "pixel-art"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0"
+  }
+}

@@ -17,6 +17,7 @@
         <div style="display: flex; gap: 10px; align-items: center;">
           <div id="sync-status" class="sync-status" title="Cloud sync status">☁️</div>
           <button id="cloud-sync-btn" class="pixel-btn secondary" style="font-size: 9px;">☁ Sync</button>
+          <button id="settings-btn" class="pixel-btn secondary" style="font-size: 9px;">⚙ Settings</button>
         </div>
       </div>
     </header>
@@ -193,6 +194,30 @@
           <strong style="color: #FFD700;">Endpoint:</strong> pixelpantry.alfelfriki.tech
         </p>
       </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content pixel-box">
+      <span class="close-settings">&times;</span>
+      <h2>⚙ Settings</h2>
+      <form id="settings-form">
+        <div class="form-group">
+          <label for="api-url-input">API URL:</label>
+          <input type="text" id="api-url-input" class="pixel-input" placeholder="https://pixelpantry.alfelfriki.tech">
+        </div>
+        <div class="form-group">
+          <label for="api-key-input">API Key:</label>
+          <input type="password" id="api-key-input" class="pixel-input" placeholder="Enter your API Key">
+          <p style="font-size: 8px; color: #a0a0a0; margin-top: 5px;">
+            Required for Cloud Sync.
+          </p>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="pixel-btn primary">Save Settings</button>
+        </div>
+      </form>
     </div>
   </div>
 

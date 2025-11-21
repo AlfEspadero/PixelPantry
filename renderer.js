@@ -40,6 +40,14 @@ const pushToCloudBtn = document.getElementById('push-to-cloud-btn');
 const pullFromCloudBtn = document.getElementById('pull-from-cloud-btn');
 const testConnectionBtn = document.getElementById('test-connection-btn');
 
+// Settings Modal
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettings = document.querySelector('.close-settings');
+const settingsForm = document.getElementById('settings-form');
+const apiKeyInput = document.getElementById('api-key-input');
+const apiUrlInput = document.getElementById('api-url-input');
+
 // Initialize App
 async function init() {
   await loadCategories();
@@ -412,6 +420,9 @@ window.onclick = (event) => {
   if (event.target === cloudSyncModal) {
     cloudSyncModal.style.display = 'none';
   }
+  if (event.target === settingsModal) {
+    settingsModal.style.display = 'none';
+  }
 };
 
 searchInput.oninput = (e) => {
@@ -532,8 +543,33 @@ testConnectionBtn.onclick = testConnection;
 pushToCloudBtn.onclick = pushToCloud;
 pullFromCloudBtn.onclick = pullFromCloud;
 
-syncStatus.onclick = () => {
-  cloudSyncModal.style.display = 'block';
+// Settings Event Listeners
+settingsBtn.onclick = async () => {
+  settingsModal.style.display = 'block';
+  const settings = await window.electronAPI.getSettings();
+  apiKeyInput.value = settings.apiKey;
+  apiUrlInput.value = settings.apiUrl;
+};
+
+closeSettings.onclick = () => {
+  settingsModal.style.display = 'none';
+};
+
+settingsForm.onsubmit = async (e) => {
+  e.preventDefault();
+  const apiKey = apiKeyInput.value.trim();
+  const apiUrl = apiUrlInput.value.trim();
+  
+  const success = await window.electronAPI.saveSettings({ apiKey, apiUrl });
+  
+  if (success) {
+    alert('Settings saved successfully!');
+    settingsModal.style.display = 'none';
+    // Test connection with new settings
+    testConnection();
+  } else {
+    alert('Failed to save settings.');
+  }
 };
 
 // Initialize on load

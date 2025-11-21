@@ -19,6 +19,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Stats
   getStats: () => ipcRenderer.invoke('get-stats'),
   
+  // Config
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+  
   // Cloud Sync
   testCloudConnection: () => ipcRenderer.invoke('test-cloud-connection'),
   pushToCloud: () => ipcRenderer.invoke('push-to-cloud'),

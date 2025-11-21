@@ -334,7 +334,11 @@ header {
   position: relative;
 }
 
-.close {
+.close,
+.close-subcategories,
+.close-edit,
+.close-sync,
+.close-settings {
   color: #aaa;
   float: right;
   font-size: 28px;
@@ -344,7 +348,15 @@ header {
 }
 
 .close:hover,
-.close:focus {
+.close:focus,
+.close-subcategories:hover,
+.close-subcategories:focus,
+.close-edit:hover,
+.close-edit:focus,
+.close-sync:hover,
+.close-sync:focus,
+.close-settings:hover,
+.close-settings:focus {
   color: #FFD700;
 }
 

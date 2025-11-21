@@ -1,12 +1,41 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const PantryDatabase = require('./database');
 const CloudSync = require('./cloudSync');
-require('dotenv').config();
+
+// Only load .env in development
+if (!app.isPackaged) {
+  require('dotenv').config();
+}
 
 let mainWindow;
 let db;
 let cloudSync;
+const configPath = path.join(app.getPath('userData'), 'config.json');
+
+function loadConfig() {
+  try {
+    if (fs.existsSync(configPath)) {
+      return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    }
+  } catch (error) {
+    console.error('Error loading config:', error);
+  }
+  return {};
+}
+
+function saveConfig(config) {
+  try {
+    const currentConfig = loadConfig();
+    const newConfig = { ...currentConfig, ...config };
+    fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error saving config:', error);
+    return false;
+  }
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -133,6 +162,24 @@ ipcMain.handle('get-stats', async () => {
   }
 });
 
+// Config Handlers
+ipcMain.handle('get-settings', async () => {
+  const config = loadConfig();
+  return {
+    apiKey: config.apiKey || process.env.PIXELPANTRY_API_KEY || '',
+    apiUrl: config.apiUrl || process.env.PIXELPANTRY_API_URL || 'https://pixelpantry.alfelfriki.tech'
+  };
+});
+
+ipcMain.handle('save-settings', async (event, settings) => {
+  const success = saveConfig(settings);
+  if (success && cloudSync) {
+    if (settings.apiKey) cloudSync.apiKey = settings.apiKey;
+    if (settings.apiUrl) cloudSync.apiUrl = settings.apiUrl;
+  }
+  return success;
+});
+
 // Cloud Sync Handlers
 ipcMain.handle('test-cloud-connection', async () => {
   try {
@@ -191,13 +238,14 @@ ipcMain.handle('pull-from-cloud', async () => {
 
 app.whenReady().then(() => {
   db = new PantryDatabase();
-  // Get API key from environment variable
-  const apiKey = process.env.PIXELPANTRY_API_KEY;
-  const apiUrl = process.env.PIXELPANTRY_API_URL || 'https://pixelpantry.alfelfriki.tech';
+  
+  // Get API key and URL from config or environment variable
+  const config = loadConfig();
+  const apiKey = config.apiKey || process.env.PIXELPANTRY_API_KEY;
+  const apiUrl = config.apiUrl || process.env.PIXELPANTRY_API_URL || 'https://pixelpantry.alfelfriki.tech';
   
   if (!apiKey) {
-    console.warn('WARNING: PIXELPANTRY_API_KEY not set. Cloud sync will not work.');
-    console.warn('Please create a .env file with your API key. See .env.example for template.');
+    console.warn('WARNING: API Key not found. Cloud sync will not work until configured.');
   }
   
   cloudSync = new CloudSync(apiUrl, apiKey);

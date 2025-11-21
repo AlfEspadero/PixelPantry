@@ -1,6 +1,6 @@
 {
   "name": "pixelpantry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A gamified pixel-art pantry inventory tracker",
   "main": "main.js",
   "scripts": {

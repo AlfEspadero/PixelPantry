@@ -1,105 +1,124 @@
 {
-  "name": "pixelpantry",
-  "version": "1.0.1",
-  "description": "A gamified pixel-art pantry inventory tracker",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "dev": "electron . --enable-logging",
-    "rebuild": "electron-rebuild",
-    "postinstall": "electron-builder install-app-deps",
-    "build": "electron-builder",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
-    "build:linux": "electron-builder --linux"
-  },
-  "keywords": [
-    "electron",
-    "pantry",
-    "inventory",
-    "pixel-art"
-  ],
-  "author": "Alfonso Espadero Jr",
-  "email": "",
-  "license": "MIT",
-  "devDependencies": {
-    "electron": "^39.0.0",
-    "electron-builder": "^26.0.12",
-    "electron-rebuild": "^3.2.9"
-  },
-  "dependencies": {
-    "better-sqlite3": "^12.0.0",
-    "dotenv": "^17.2.3"
-  },
-  "build": {
-    "appId": "com.pixelpantry.app",
-    "productName": "PixelPantry",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "**/*",
-      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-      "!.editorconfig",
-      "!**/._*",
-      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-      "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-      "!**/.env*",
-      "!d1-pixelpantry/**/*"
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
-      ],
-      "icon": "assets/icon.png"
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["x64", "arm64"]
-        },
-        {
-          "target": "zip",
-          "arch": ["x64", "arm64"]
-        }
-      ],
-      "category": "public.app-category.productivity",
-      "icon": "assets/icon.png"
-    },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        },
-        {
-          "target": "deb",
-          "arch": ["x64"]
-        },
-        {
-          "target": "zip",
-          "arch": ["x64"]
-        }
-      ],
-      "category": "Utility",
-      "icon": "assets/icon.png",
-      "maintainer": "Alfonso Espadero Jr <>"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
-  }
+	"name": "pixelpantry",
+	"version": "1.0.1",
+	"description": "A gamified pixel-art pantry inventory tracker",
+	"main": "main.js",
+	"scripts": {
+		"start": "electron .",
+		"dev": "electron . --enable-logging",
+		"rebuild": "electron-rebuild",
+		"postinstall": "electron-builder install-app-deps",
+		"build": "electron-builder",
+		"build:win": "electron-builder --win",
+		"build:mac": "electron-builder --mac",
+		"build:linux": "electron-builder --linux"
+	},
+	"keywords": [
+		"electron",
+		"pantry",
+		"inventory",
+		"pixel-art"
+	],
+	"author": "Alfonso Espadero Jr",
+	"email": "",
+	"license": "MIT",
+	"devDependencies": {
+		"electron": "^39.0.0",
+		"electron-builder": "^26.0.12",
+		"electron-rebuild": "^3.2.9"
+	},
+	"dependencies": {
+		"better-sqlite3": "^12.0.0",
+		"dotenv": "^17.2.3"
+	},
+	"build": {
+		"appId": "com.pixelpantry.app",
+		"productName": "PixelPantry",
+		"directories": {
+			"output": "dist"
+		},
+		"files": [
+			"**/*",
+			"!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+			"!.editorconfig",
+			"!**/._*",
+			"!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+			"!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+			"!**/{appveyor.yml,.travis.yml,circle.yml}",
+			"!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+			"!**/.env*",
+			"!d1-pixelpantry/**/*"
+		],
+		"win": {
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "portable",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"icon": "assets/icon.png"
+		},
+		"mac": {
+			"target": [
+				{
+					"target": "dmg",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				},
+				{
+					"target": "zip",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				}
+			],
+			"category": "public.app-category.productivity",
+			"icon": "assets/icon.png"
+		},
+		"linux": {
+			"target": [
+				{
+					"target": [
+						"AppImage",
+						"pacman"
+					],
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "deb",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "zip",
+					"arch": [
+						"x64"
+					]
+				}
+			],
+			"category": "Utility",
+			"icon": "assets/icon.png",
+			"maintainer": "Alfonso Espadero Jr <pixelpantry.shelter185@passmail.net>"
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true,
+			"createDesktopShortcut": true,
+			"createStartMenuShortcut": true
+		}
+	}
 }

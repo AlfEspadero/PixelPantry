@@ -2,6 +2,7 @@
 	"name": "pixelpantry",
 	"version": "1.0.1",
 	"description": "A gamified pixel-art pantry inventory tracker",
+	"homepage": "https://github.com/AlfEspadero/PixelPantry",
 	"main": "main.js",
 	"scripts": {
 		"start": "electron .",

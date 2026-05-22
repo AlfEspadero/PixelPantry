@@ -1,3 +1,34 @@
+const { invoke } = window.__TAURI__.core;
+
+const tauriAPI = {
+  // Categories
+  getCategories: () => invoke('get_categories'),
+
+  // Subcategories
+  getSubcategories: (categoryId) => invoke('get_subcategories', { category_id: categoryId }),
+  addSubcategory: (data) => invoke('add_subcategory', { data }),
+  updateSubcategory: (id, name) => invoke('update_subcategory', { id, name }),
+  deleteSubcategory: (id) => invoke('delete_subcategory', { id }),
+
+  // Items
+  getItems: () => invoke('get_items'),
+  addItem: (item) => invoke('add_item', { item }),
+  updateItem: (id, updates) => invoke('update_item', { id, updates }),
+  deleteItem: (id) => invoke('delete_item', { id }),
+
+  // Stats
+  getStats: () => invoke('get_stats'),
+
+  // Config
+  getSettings: () => invoke('get_settings'),
+  saveSettings: (settings) => invoke('save_settings', { settings }),
+
+  // Cloud Sync
+  testCloudConnection: () => invoke('test_cloud_connection'),
+  pushToCloud: () => invoke('push_to_cloud'),
+  pullFromCloud: () => invoke('pull_from_cloud')
+};
+
 // Application State
 let categories = [];
 let subcategories = [];
@@ -61,17 +92,17 @@ async function init() {
 
 // Load Categories
 async function loadCategories() {
-  categories = await window.electronAPI.getCategories();
+  categories = await tauriAPI.getCategories();
 }
 
 // Load Subcategories
 async function loadSubcategories() {
-  subcategories = await window.electronAPI.getSubcategories();
+  subcategories = await tauriAPI.getSubcategories();
 }
 
 // Load Items
 async function loadItems() {
-  items = await window.electronAPI.getItems();
+  items = await tauriAPI.getItems();
 }
 
 // Render Categories
@@ -188,7 +219,7 @@ window.updateQuantity = async function(itemId, change) {
   const item = items.find(i => i.id === itemId);
   if (item) {
     const newQuantity = Math.max(0, item.quantity + change);
-    await window.electronAPI.updateItem(itemId, { quantity: newQuantity });
+    await tauriAPI.updateItem(itemId, { quantity: newQuantity });
     await loadItems();
     renderInventory();
     updateStats();
@@ -198,7 +229,7 @@ window.updateQuantity = async function(itemId, change) {
 // Delete Item
 window.deleteItem = async function(itemId) {
   if (confirm('Are you sure you want to delete this item?')) {
-    await window.electronAPI.deleteItem(itemId);
+    await tauriAPI.deleteItem(itemId);
     await loadItems();
     renderCategories();
     renderInventory();
@@ -239,7 +270,7 @@ editItemForm.onsubmit = async (e) => {
     low_stock_threshold: parseInt(document.getElementById('edit-item-low-stock').value)
   };
 
-  await window.electronAPI.updateItem(itemId, updates);
+  await tauriAPI.updateItem(itemId, updates);
   await loadItems();
   renderCategories();
   renderInventory();
@@ -263,7 +294,7 @@ addItemForm.onsubmit = async (e) => {
     low_stock_threshold: parseInt(document.getElementById('item-low-stock').value)
   };
 
-  await window.electronAPI.addItem(newItem);
+  await tauriAPI.addItem(newItem);
   await loadItems();
   renderCategories();
   renderInventory();
@@ -275,7 +306,7 @@ addItemForm.onsubmit = async (e) => {
 
 // Update Stats
 async function updateStats() {
-  const stats = await window.electronAPI.getStats();
+  const stats = await tauriAPI.getStats();
   document.getElementById('total-items').textContent = stats.totalItems;
   document.getElementById('total-categories').textContent = stats.totalCategories;
   document.getElementById('low-stock').textContent = stats.lowStock;
@@ -354,7 +385,7 @@ async function renderSubcategoriesList() {
 // Delete Subcategory
 window.deleteSubcategory = async function(subcategoryId) {
   if (confirm('Are you sure? Items using this subcategory will have it removed.')) {
-    await window.electronAPI.deleteSubcategory(subcategoryId);
+    await tauriAPI.deleteSubcategory(subcategoryId);
     await loadSubcategories();
     renderSubcategoriesList();
   }
@@ -367,7 +398,7 @@ addSubcategoryForm.onsubmit = async (e) => {
   const categoryId = subcategoryCategory.value;
   const name = document.getElementById('new-subcategory-name').value;
 
-  await window.electronAPI.addSubcategory({
+  await tauriAPI.addSubcategory({
     category_id: categoryId,
     name: name
   });
@@ -472,7 +503,7 @@ async function testConnection() {
   showSyncMessage('Testing connection...', 'info');
   setSyncStatus('syncing');
   
-  const result = await window.electronAPI.testCloudConnection();
+  const result = await tauriAPI.testCloudConnection();
   
   if (result.success) {
     showSyncMessage('✓ Connected to cloud successfully!', 'success');
@@ -491,7 +522,7 @@ async function pushToCloud() {
   showSyncMessage('Pushing data to cloud...', 'info');
   setSyncStatus('syncing');
   
-  const result = await window.electronAPI.pushToCloud();
+  const result = await tauriAPI.pushToCloud();
   
   if (result.success) {
     showSyncMessage('✓ Data pushed to cloud successfully!', 'success');
@@ -510,7 +541,7 @@ async function pullFromCloud() {
   showSyncMessage('Pulling data from cloud...', 'info');
   setSyncStatus('syncing');
   
-  const result = await window.electronAPI.pullFromCloud();
+  const result = await tauriAPI.pullFromCloud();
   
   if (result.success) {
     showSyncMessage('✓ Data pulled from cloud successfully!', 'success');
@@ -546,7 +577,7 @@ pullFromCloudBtn.onclick = pullFromCloud;
 // Settings Event Listeners
 settingsBtn.onclick = async () => {
   settingsModal.style.display = 'block';
-  const settings = await window.electronAPI.getSettings();
+  const settings = await tauriAPI.getSettings();
   apiKeyInput.value = settings.apiKey;
   apiUrlInput.value = settings.apiUrl;
 };
@@ -560,7 +591,7 @@ settingsForm.onsubmit = async (e) => {
   const apiKey = apiKeyInput.value.trim();
   const apiUrl = apiUrlInput.value.trim();
   
-  const success = await window.electronAPI.saveSettings({ apiKey, apiUrl });
+  const success = await tauriAPI.saveSettings({ apiKey, apiUrl });
   
   if (success) {
     alert('Settings saved successfully!');

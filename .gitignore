@@ -88,6 +88,10 @@ out
 dist
 .output
 
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js

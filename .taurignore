@@ -1,0 +1,11 @@
+.git
+.github
+node_modules
+src-tauri
+coverage
+dist
+d1-pixelpantry
+pixelpantry-git
+*.md
+*.log
+.env*

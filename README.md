@@ -1,6 +1,6 @@
 # PixelPantry 🎮
 
-A gamified pixel-art pantry inventory tracker built with Electron.
+A gamified pixel-art pantry inventory tracker built with Tauri and Rust.
 
 ## Features
 
@@ -35,7 +35,9 @@ A gamified pixel-art pantry inventory tracker built with Electron.
 npm install
 ```
 
-2. Set up your API key for cloud sync:
+2. Ensure you have the Rust toolchain and Tauri system prerequisites installed.
+
+3. Set up your API key for cloud sync (optional for development):
 ```bash
 cp .env.example .env
 # Edit .env and add your Cloudflare API key
@@ -48,7 +50,7 @@ Run the application in development mode:
 npm run dev
 ```
 
-Or run without DevTools:
+Or run with the start alias:
 ```bash
 npm start
 ```
@@ -60,14 +62,7 @@ Build installers for all platforms:
 npm run build
 ```
 
-Build for specific platforms:
-```bash
-npm run build:win      # Windows (NSIS installer + Portable)
-npm run build:mac      # macOS (DMG + ZIP for Intel and Apple Silicon)
-npm run build:linux    # Linux (AppImage, deb, rpm)
-```
-
-Built installers will be in the `dist/` directory.
+Built installers will be in `src-tauri/target/release/bundle/`.
 
 ### Automated Releases
 
@@ -106,13 +101,11 @@ git push origin v1.0.0
 
 ```
 PixelPantry/
-├── main.js           # Electron main process
-├── preload.js        # Preload script for IPC
-├── database.js       # SQLite database layer
-├── cloudSync.js      # Cloud sync with Cloudflare D1
-├── index.html        # Application UI
-├── styles.css        # Pixel-art styling
-├── renderer.js       # Frontend logic
+├── web/              # Frontend assets
+│   ├── index.html    # Application UI
+│   ├── styles.css    # Pixel-art styling
+│   └── renderer.js   # Frontend logic
+├── src-tauri/        # Tauri (Rust) backend
 ├── package.json      # Dependencies
 ├── assets/           # Icons and images
 └── README.md         # Documentation
@@ -120,10 +113,10 @@ PixelPantry/
 
 ## Data Storage
 
-Application data is stored in a SQLite database in your system's user data directory:
-- **macOS**: `~/Library/Application Support/pixelpantry/pantry.db`
-- **Windows**: `%APPDATA%/pixelpantry/pantry.db`
-- **Linux**: `~/.config/pixelpantry/pantry.db`
+Application data is stored in a SQLite database in your system's Tauri app data directory:
+- **macOS**: `~/Library/Application Support/com.pixelpantry.app/pantry.db`
+- **Windows**: `%APPDATA%/com.pixelpantry.app/pantry.db`
+- **Linux**: `~/.local/share/com.pixelpantry.app/pantry.db`
 
 The database includes three main tables:
 - **categories**: Main category definitions
@@ -135,7 +128,7 @@ The database includes three main tables:
 PixelPantry can sync with a Cloudflare D1 database via REST API:
 
 - **Endpoint**: `https://pixelpantry.alfelfriki.tech`
-- **Authentication**: API key required (set in `.env` file)
+- **Authentication**: API key required (set in Settings or via `.env` in development)
 - **Push**: Uploads local data to cloud (overwrites cloud data)
 - **Pull**: Downloads cloud data to local (overwrites local data)
 - **Connection Test**: Verifies cloud API is accessible
@@ -143,18 +136,19 @@ PixelPantry can sync with a Cloudflare D1 database via REST API:
 ### Setting up Cloud Sync
 
 1. Get your API key from the Cloudflare worker deployment
-2. Create a `.env` file in the app directory:
+2. (Optional for development) Create a `.env` file in the app directory:
    ```env
    PIXELPANTRY_API_KEY=your-api-key-here
    PIXELPANTRY_API_URL=https://pixelpantry.alfelfriki.tech
    ```
 3. Restart the app to load the API key
-4. Click ☁ Sync to test connection and sync data
+4. Or enter the API key in Settings to save it to your local config
+5. Click ☁ Sync to test connection and sync data
 
 ### Security
 
 - All sync operations require API key authentication
-- API key stored locally in `.env` (not committed to git)
+- API key stored locally in the app config file (not committed to git)
 - HTTPS encryption for all data transfers
 - Only you can access your data with your unique API key
 
@@ -178,8 +172,8 @@ Your cloud endpoint should implement these REST endpoints:
 
 ## Technologies
 
-- Electron 28
-- better-sqlite3 (SQLite database)
+- Tauri 2
+- Rust + rusqlite (SQLite database)
 - Vanilla JavaScript
 - CSS3 (Pixel-art styling)
 - Google Fonts (Press Start 2P)

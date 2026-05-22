@@ -561,9 +561,14 @@ async function pullFromCloud() {
 }
 
 // Cloud Sync Event Listeners
-cloudSyncBtn.onclick = () => {
+cloudSyncBtn.onclick = async () => {
   cloudSyncModal.style.display = 'block';
   showSyncMessage('Ready to sync with cloud', 'info');
+  const endpoint = document.getElementById('sync-endpoint');
+  if (endpoint) {
+    const settings = await tauriAPI.getSettings();
+    endpoint.textContent = settings.apiUrl || 'Not set';
+  }
 };
 
 closeSync.onclick = () => {

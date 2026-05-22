@@ -20,7 +20,6 @@ pub struct CloudResponse {
 
 #[derive(Debug, Clone)]
 pub struct CloudData {
-    pub categories: Vec<Category>,
     pub subcategories: Vec<Subcategory>,
     pub items: Vec<CloudItem>,
 }
@@ -99,11 +98,10 @@ impl CloudSync {
     }
 
     pub fn pull_from_cloud(&self) -> Result<CloudData, String> {
-        let categories: Vec<Category> = self.request_collection("/api/categories")?;
+        let _categories: Vec<Category> = self.request_collection("/api/categories")?;
         let subcategories: Vec<Subcategory> = self.request_collection("/api/subcategories")?;
         let items: Vec<CloudItem> = self.request_collection("/api/items")?;
         Ok(CloudData {
-            categories,
             subcategories,
             items,
         })

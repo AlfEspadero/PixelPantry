@@ -206,7 +206,6 @@ fn pull_from_cloud(state: tauri::State<'_, AppState>) -> Result<CloudResponse, S
         drop(config);
 
         let data = cloud.pull_from_cloud()?;
-        let _ = data.categories.len();
         let subcategories = data.subcategories;
         let items = data.items;
         let db = state.db.lock().map_err(|_| "Database lock failed".to_string())?;
